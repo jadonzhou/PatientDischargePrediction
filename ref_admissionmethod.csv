@@ -1,0 +1,21 @@
+﻿AdmissionMethodCode,AdmissionMethodType,AdmissionMethod
+2A,Emergency,Emergency - A&E department of another provider where they had not been admitted
+2B,Emergency,Emergency - Transfer of Inpatient from another provider
+2C,Emergency,Emergency - Baby born at home as intended
+2D,Emergency,Emergency - Other emergency admission
+11,Elective,Elective - Waiting List. Put on list without date to admit
+12,Elective,Elective - Booked.  Put on list with date to admit
+13,Elective,Elective - Planned. Usually part of sequence of care
+21,Emergency,Emergency - A&E department or other casualty department of the health care provider
+22,Emergency,Emergency - GP Referral
+23,Emergency,Emergency - Bed Bureau/Central Bed Bureau
+24,Emergency,"Emergency - Consultant out-patient clinic, to this or another health care provider"
+28,Emergency,"Emergency - Other means, including admitted from the A&E department of another health care provider "
+31,Maternity,Maternity - Antepartum. Female patients only
+32,Maternity,Maternity - Postpartum. Female patients only
+81,Transfer,"Other - Transfer of Inpatient from other provider (non-emergency). Admission source 51,
+52 or 53"
+82,Baby,Other - Baby born in hospital in this provider. Admission source 79
+83,Baby,Other - Baby born outside provider (not at home). Admission source 79
+98,Not applicable,Not applicable
+99,Not known,Not known

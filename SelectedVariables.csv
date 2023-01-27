@@ -7,7 +7,7 @@ Meta,EpisodeID,Meta,No,Meta
 Meta,Admission method,Meta,No,Meta
 Meta,Gender,Meta,Yes,Meta
 Meta,Age group,Meta,Yes,Meta
-Meta,Ethnic group,Meta,Yes,Meta
+Meta,Ethnicity group,Meta,Yes,Meta
 Meta,IMD group,Meta,Yes,Meta
 Meta,Admission source,Meta,Yes,Meta
 Meta,CharlsonCategory,Meta,No,Meta
@@ -24,46 +24,46 @@ Outcome,Imminent discharge within 24 hours,Meta,No,Meta
 Outcome,Imminent discharge within 48 hours,Meta,No,Meta
 Outcome,7-days longer stay,Meta,No,Meta
 Outcome,30-day mortality,Meta,No,Meta
-Variable,Male gender (Yes/No),Variable,No,Demographics
+Variable,Male,Variable,No,Demographics
 Variable,Age,Variable,No,Demographics
 Variable,"Height, cm",Variable,No,Demographics
 Variable,"Weight, kg",Variable,No,Demographics
 Variable,BMI,Variable,No,Demographics
-Variable,Ethnicity: White (Yes/No),Variable,No,Demographics
-Variable,Ethnicity: Mixed (Yes/No),Variable,No,Demographics
-Variable,Ethnicity: Asian or Asian British (Yes/No),Variable,No,Demographics
-Variable,Ethnicity: Black or Black British (Yes/No),Variable,No,Demographics
-Variable,Ethnicity: Other Ethnicity Groups (Yes/No),Variable,No,Demographics
-Variable,Ethnicity: Not Stated/Not Known (Yes/No),Variable,No,Demographics
-Variable,Abingdon (Yes/No),Variable,No,Home geographic location
-Variable,Northampton NN (Yes/No),Variable,No,Home geographic location
-Variable,Swindon SN (Yes/No),Variable,No,Home geographic location
-Variable,"Bampton, Burford, Carterton (Yes/No)",Variable,No,Home geographic location
-Variable,Didcot (Yes/No),Variable,No,Home geographic location
-Variable,Hemel Hempstead HP (Yes/No),Variable,No,Home geographic location
-Variable,Thame (Yes/No),Variable,No,Home geographic location
-Variable,Watlington (Yes/No),Variable,No,Home geographic location
-Variable,Woodstock (Yes/No),Variable,No,Home geographic location
-Variable,Banbury (Yes/No),Variable,No,Home geographic location
-Variable,Oxford (Yes/No),Variable,No,Home geographic location
-Variable,Bicester (Yes/No),Variable,No,Home geographic location
-Variable,Chipping Norton (Yes/No),Variable,No,Home geographic location
-Variable,Other regions (Yes/No),Variable,No,Home geographic location
-Variable,Wallingford (Yes/No),Variable,No,Home geographic location
-Variable,Slough SL (Yes/No),Variable,No,Home geographic location
-Variable,Chinnor (Yes/No),Variable,No,Home geographic location
-Variable,Reading RG (Yes/No),Variable,No,Home geographic location
-Variable,Milton Keynes MK (Yes/No),Variable,No,Home geographic location
-Variable,Wantage (Yes/No),Variable,No,Home geographic location
-Variable,Kidlington (Yes/No),Variable,No,Home geographic location
-Variable,Witney (Yes/No),Variable,No,Home geographic location
+Variable,White,Variable,No,Demographics
+Variable,Mixed,Variable,No,Demographics
+Variable,Asian or Asian British,Variable,No,Demographics
+Variable,Black or Black British,Variable,No,Demographics
+Variable,Other Ethnicity Groups,Variable,No,Demographics
+Variable,Not Stated/Not Known,Variable,No,Demographics
+Variable,Abingdon,Variable,No,Home geographic location
+Variable,Northampton,Variable,No,Home geographic location
+Variable,Swindon,Variable,No,Home geographic location
+Variable,"Bampton, Burford, Carterton",Variable,No,Home geographic location
+Variable,Didcot,Variable,No,Home geographic location
+Variable,Hemel Hempstead,Variable,No,Home geographic location
+Variable,Thame,Variable,No,Home geographic location
+Variable,Watlington,Variable,No,Home geographic location
+Variable,Woodstock,Variable,No,Home geographic location
+Variable,Banbury,Variable,No,Home geographic location
+Variable,Oxford,Variable,No,Home geographic location
+Variable,Bicester,Variable,No,Home geographic location
+Variable,Chipping Norton,Variable,No,Home geographic location
+Variable,Other regions,Variable,No,Home geographic location
+Variable,Wallingford,Variable,No,Home geographic location
+Variable,Slough,Variable,No,Home geographic location
+Variable,Chinnor,Variable,No,Home geographic location
+Variable,Reading,Variable,No,Home geographic location
+Variable,Milton Keynes,Variable,No,Home geographic location
+Variable,Wantage,Variable,No,Home geographic location
+Variable,Kidlington,Variable,No,Home geographic location
+Variable,Witney,Variable,No,Home geographic location
 Variable,Admission day of year,Variable,No,Admission time & source
 Variable,Admission hour time of day,Variable,No,Admission time & source
 Variable,Index day of year,Variable,No,Index date features
 Variable,Index hour time of day,Variable,No,Index date features
-Variable,Admission source: Usual place of residence,Variable,No,Admission time & source
-Variable,Admission source: Non-NHS institutional care,Variable,No,Admission time & source
-Variable,Admission source: Other NHS Provider,Variable,No,Admission time & source
+Variable,Usual place of residence,Variable,No,Admission time & source
+Variable,Non-NHS institutional care,Variable,No,Admission time & source
+Variable,Other NHS Provider,Variable,No,Admission time & source
 Variable,IMDScore,Variable,No,Home geographic location
 Variable,Charlson,Variable,No,Comorbidity indexes
 Variable,Elixhauser,Variable,No,Comorbidity indexes

@@ -14,7 +14,7 @@ OX29,24215,Witney
 OX10,23685,Wallingford
 OX18,23646,"Bampton, Burford, Carterton"
 OX17,20490,Banbury
-NN13,20209,Northampton NN
+NN13,20209,Northampton
 OX15,18699,Banbury
 OX1,17223,Oxford
 OX13,13583,Abingdon
@@ -22,135 +22,135 @@ OX9,11715,Thame
 OX25,9586,Bicester
 OX44,8151,Oxford
 OX33,8075,Oxford
-SN7,8064,Swindon SN
-NN11,6653,Northampton NN
-SL6,5460,Slough SL
+SN7,8064,Swindon
+NN11,6653,Northampton
+SL6,5460,Slough
 OX27,5351,Bicester
-ZZ99,5251,Other regions
+ZZ99,5251,Other Regions
 OX20,5236,Woodstock
-HP18,4940,Hemel Hempstead HP
-SL1,4604,Slough SL
-MK18,4495,Milton Keynes MK
-HP13,4015,Hemel Hempstead HP
-SN3,3978,Swindon SN
-RG9,3721,Reading RG
+HP18,4940,Hemel Hempstead
+SL1,4604,Slough
+MK18,4495,Milton Keynes
+HP13,4015,Hemel Hempstead
+SN3,3978,Swindon
+RG9,3721,Reading
 OX49,3620,Watlington
-SN2,3561,Swindon SN
-SL2,3465,Slough SL
-RG30,3334,Reading RG
-HP21,3316,Hemel Hempstead HP
-HP12,2722,Hemel Hempstead HP
-SL4,2716,Slough SL
-RG2,2699,Reading RG
-MK6,2667,Milton Keynes MK
-SL3,2665,Slough SL
-HP19,2656,Hemel Hempstead HP
-NN3,2589,Northampton NN
+SN2,3561,Swindon
+SL2,3465,Slough
+RG30,3334,Reading
+HP21,3316,Hemel Hempstead
+HP12,2722,Hemel Hempstead
+SL4,2716,Slough
+RG2,2699,Reading
+MK6,2667,Milton Keynes
+SL3,2665,Slough
+HP19,2656,Hemel Hempstead
+NN3,2589,Northampton
 CV36,2523,Other regions
-RG1,2471,Reading RG
-MK3,2458,Milton Keynes MK
-RG4,2427,Reading RG
-SL7,2426,Slough SL
-RG8,2357,Reading RG
+RG1,2471,Reading
+MK3,2458,Milton Keynes
+RG4,2427,Reading
+SL7,2426,Slough
+RG8,2357,Reading
 LU7,2345,Other regions
-HP14,2280,Hemel Hempstead HP
+HP14,2280,Hemel Hempstead
 GL7,2147,Other regions
-RG14,2144,Reading RG
-MK14,2140,Milton Keynes MK
-MK4,2102,Milton Keynes MK
-HP22,2084,Hemel Hempstead HP
-SN5,2014,Swindon SN
-MK17,1995,Milton Keynes MK
-RG6,1988,Reading RG
+RG14,2144,Reading
+MK14,2140,Milton Keynes
+MK4,2102,Milton Keynes
+HP22,2084,Hemel Hempstead
+SN5,2014,Swindon
+MK17,1995,Milton Keynes
+RG6,1988,Reading
 OX39,1986,Chinnor
-HP5,1933,Hemel Hempstead HP
-RG5,1885,Reading RG
-SN25,1832,Swindon SN
-MK16,1788,Milton Keynes MK
-RG31,1786,Reading RG
-MK13,1771,Milton Keynes MK
-SN8,1751,Swindon SN
-SN1,1749,Swindon SN
-HP10,1744,Hemel Hempstead HP
-RG12,1716,Reading RG
-RG7,1683,Reading RG
-SN6,1670,Swindon SN
-MK2,1655,Milton Keynes MK
-HP20,1604,Hemel Hempstead HP
-HP15,1601,Hemel Hempstead HP
-RG10,1564,Reading RG
-RG17,1557,Reading RG
-RG18,1529,Reading RG
-HP17,1419,Hemel Hempstead HP
-HP27,1419,Hemel Hempstead HP
-NN12,1378,Northampton NN
-RG41,1355,Reading RG
+HP5,1933,Hemel Hempstead
+RG5,1885,Reading
+SN25,1832,Swindon
+MK16,1788,Milton Keynes
+RG31,1786,Reading
+MK13,1771,Milton Keynes
+SN8,1751,Swindon
+SN1,1749,Swindon
+HP10,1744,Hemel Hempstead
+RG12,1716,Reading
+RG7,1683,Reading
+SN6,1670,Swindon
+MK2,1655,Milton Keynes
+HP20,1604,Hemel Hempstead
+HP15,1601,Hemel Hempstead
+RG10,1564,Reading
+RG17,1557,Reading
+RG18,1529,Reading
+HP17,1419,Hemel Hempstead
+HP27,1419,Hemel Hempstead
+NN12,1378,Northampton
+RG41,1355,Reading
 GL54,1346,Other regions
-NN5,1339,Northampton NN
+NN5,1339,Northampton
 GL56,1332,Other regions
-SN4,1320,Swindon SN
-HP11,1300,Hemel Hempstead HP
-RG40,1297,Reading RG
-HP23,1291,Hemel Hempstead HP
+SN4,1320,Swindon
+HP11,1300,Hemel Hempstead
+RG40,1297,Reading
+HP23,1291,Hemel Hempstead
 JE2,1265,Other regions
-RG20,1255,Reading RG
-NN4,1207,Northampton NN
-RG19,1142,Reading RG
+RG20,1255,Reading
+NN4,1207,Northampton
+RG19,1142,Reading
 CV35,1103,Other regions
-SL9,1089,Slough SL
-MK46,1083,Milton Keynes MK
-NN2,1080,Northampton NN
-HP9,1071,Hemel Hempstead HP
-NN8,1034,Northampton NN
+SL9,1089,Slough
+MK46,1083,Milton Keynes
+NN2,1080,Northampton
+HP9,1071,Hemel Hempstead
+NN8,1034,Northampton
 JE3,1022,Other regions
-MK12,1021,Milton Keynes MK
-MK7,999,Milton Keynes MK
+MK12,1021,Milton Keynes
+MK7,999,Milton Keynes
 CV47,995,Other regions
-NN7,976,Northampton NN
-MK8,970,Milton Keynes MK
-MK19,924,Milton Keynes MK
-SN10,897,Swindon SN
-HP16,891,Hemel Hempstead HP
-NN6,864,Northampton NN
-NN1,858,Northampton NN
-SL5,846,Slough SL
-HP6,812,Hemel Hempstead HP
+NN7,976,Northampton
+MK8,970,Milton Keynes
+MK19,924,Milton Keynes
+SN10,897,Swindon
+HP16,891,Hemel Hempstead
+NN6,864,Northampton
+NN1,858,Northampton
+SL5,846,Slough
+HP6,812,Hemel Hempstead
 GL51,809,Other regions
-MK10,799,Milton Keynes MK
-MK11,796,Milton Keynes MK
-NN14,796,Northampton NN
-MK5,793,Milton Keynes MK
-RG42,764,Reading RG
-NN10,697,Northampton NN
-NN15,694,Northampton NN
+MK10,799,Milton Keynes
+MK11,796,Milton Keynes
+NN14,796,Northampton
+MK5,793,Milton Keynes
+RG42,764,Reading
+NN10,697,Northampton
+NN15,694,Northampton
 GL52,690,Other regions
-MK15,669,Milton Keynes MK
-SN11,639,Swindon SN
-SN15,604,Swindon SN
-SN16,601,Swindon SN
-NN18,571,Northampton NN
-HP8,552,Hemel Hempstead HP
-SL0,522,Slough SL
-NN16,517,Northampton NN
+MK15,669,Milton Keynes
+SN11,639,Swindon
+SN15,604,Swindon
+SN16,601,Swindon
+NN18,571,Northampton
+HP8,552,Hemel Hempstead
+SL0,522,Slough
+NN16,517,Northampton
 GL20,485,Other regions
-HP7,463,Hemel Hempstead HP
+HP7,463,Hemel Hempstead
 GL3,440,Other regions
 GL2,439,Other regions
 CV37,438,Other regions
-SL8,428,Slough SL
+SL8,428,Slough
 WR11,414,Other regions
-RG22,409,Reading RG
+RG22,409,Reading
 GL53,406,Other regions
 UB9,388,Other regions
-RG26,385,Reading RG
+RG26,385,Reading
 GL4,372,Other regions
-HP4,348,Hemel Hempstead HP
+HP4,348,Hemel Hempstead
 GL55,341,Other regions
-SN9,330,Swindon SN
-RG24,322,Reading RG
-RG45,322,Reading RG
-MK43,312,Milton Keynes MK
-NN9,311,Northampton NN
+SN9,330,Swindon
+RG24,322,Reading
+RG45,322,Reading
+MK43,312,Milton Keynes
+NN9,311,Northampton
 SO30,308,Other regions
 GL15,304,Other regions
 PO13,291,Other regions
@@ -158,15 +158,15 @@ LU3,277,Other regions
 GL50,269,Other regions
 DA10,261,Other regions
 SP10,261,Other regions
-NN17,259,Northampton NN
+NN17,259,Northampton
 GL6,252,Other regions
-SN14,248,Swindon SN
+SN14,248,Swindon
 GL1,245,Other regions
 TW17,239,Other regions
-MK9,233,Milton Keynes MK
+MK9,233,Milton Keynes
 BA14,232,Other regions
 WD3,229,Other regions
-NN29,220,Northampton NN
+NN29,220,Northampton
 SP11,219,Other regions
 BN13,209,Other regions
 GL5,208,Other regions
@@ -175,17 +175,17 @@ SO15,207,Other regions
 SO45,205,Other regions
 SO18,196,Other regions
 LE16,193,Other regions
-RG27,193,Reading RG
+RG27,193,Reading
 UB8,190,Other regions
 CF62,188,Other regions
-MK42,185,Milton Keynes MK
+MK42,185,Milton Keynes
 WR12,184,Other regions
 BA2,179,Other regions
 CV32,171,Other regions
 SO16,171,Other regions
 PE28,168,Other regions
 PO8,167,Other regions
-SN26,164,Swindon SN
+SN26,164,Swindon
 PO5,163,Other regions
 TW19,161,Other regions
 GL17,159,Other regions
@@ -193,11 +193,11 @@ SO50,158,Other regions
 GU47,156,Other regions
 SO31,155,Other regions
 BH11,154,Other regions
-HP1,152,Hemel Hempstead HP
+HP1,152,Hemel Hempstead
 PO20,149,Other regions
 GU34,148,Other regions
 GL14,147,Other regions
-RG23,147,Reading RG
+RG23,147,Reading
 TW15,144,Other regions
 BS37,141,Other regions
 NW3,141,Other regions
@@ -209,29 +209,29 @@ CV2,126,Other regions
 CV10,125,Other regions
 OX8,125,Other regions
 BN14,124,Other regions
-RG21,120,Reading RG
-HP3,119,Hemel Hempstead HP
-MK45,119,Milton Keynes MK
+RG21,120,Reading
+HP3,119,Hemel Hempstead
+MK45,119,Milton Keynes
 BA12,118,Other regions
 BH12,118,Other regions
 RH20,118,Other regions
 CV22,116,Other regions
 WD17,115,Other regions
-HP2,114,Hemel Hempstead HP
+HP2,114,Hemel Hempstead
 SO23,114,Other regions
 TA6,113,Other regions
 PL9,112,Other regions
 GL8,111,Other regions
 GL18,108,Other regions
 HA8,108,Other regions
-RG25,108,Reading RG
+RG25,108,Reading
 CM22,107,Other regions
 PO9,106,Other regions
 BN21,105,Other regions
 CV6,105,Other regions
 LU5,103,Other regions
 SG1,103,Other regions
-SN12,102,Swindon SN
+SN12,102,Swindon
 CV31,101,Other regions
 E1,101,Other regions
 CV7,100,Other regions
@@ -247,7 +247,7 @@ CO2,92,Other regions
 SO51,92,Other regions
 SW4,92,Other regions
 CT19,91,Other regions
-MK40,90,Milton Keynes MK
+MK40,90,Milton Keynes
 TR11,90,Other regions
 GU14,88,Other regions
 BH22,87,Other regions
@@ -292,9 +292,9 @@ HA5,72,Other regions
 LU1,72,Other regions
 RM6,71,Other regions
 EX39,70,Other regions
-MK41,70,Milton Keynes MK
+MK41,70,Milton Keynes
 BS16,69,Other regions
-SN13,69,Swindon SN
+SN13,69,Swindon
 SP5,69,Other regions
 BT34,68,Other regions
 CV11,68,Other regions
@@ -375,7 +375,7 @@ HR9,47,Other regions
 TN9,47,Other regions
 CT4,46,Other regions
 DE7,46,Other regions
-MK1,46,Milton Keynes MK
+MK1,46,Milton Keynes
 NW9,46,Other regions
 SK8,46,Other regions
 TF10,46,Other regions
@@ -408,7 +408,7 @@ TW14,42,Other regions
 W1G,42,Other regions
 N17,41,Other regions
 PO21,41,Other regions
-RG28,41,Reading RG
+RG28,41,Reading
 SS17,41,Other regions
 WR14,41,Other regions
 B12,40,Other regions
@@ -488,7 +488,7 @@ BN11,32,Other regions
 CV13,32,Other regions
 M16,32,Other regions
 N4,32,Other regions
-RG29,32,Reading RG
+RG29,32,Reading
 RH4,32,Other regions
 SY20,32,Other regions
 BH3,31,Other regions
@@ -696,7 +696,7 @@ LE8,18,Other regions
 LN9,18,Other regions
 NE3,18,Other regions
 NW1,18,Other regions
-RG3,18,Reading RG
+RG3,18,Reading
 TA4,18,Other regions
 TA7,18,Other regions
 TR9,18,Other regions
@@ -897,7 +897,7 @@ NR4,10,Other regions
 PE38,10,Other regions
 PO19,10,Other regions
 PO37,10,Other regions
-RG16,10,Reading RG
+RG16,10,Reading
 SA70,10,Other regions
 SG3,10,Other regions
 SP8,10,Other regions
@@ -931,7 +931,7 @@ KT20,9,Other regions
 L37,9,Other regions
 LL30,9,Other regions
 LN5,9,Other regions
-MK44,9,Milton Keynes MK
+MK44,9,Milton Keynes
 NE29,9,Other regions
 NG18,9,Other regions
 NP12,9,Other regions

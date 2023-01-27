@@ -33,8 +33,8 @@ Variable,Ethnicity: White (Yes/No),Variable,No,Demographics
 Variable,Ethnicity: Mixed (Yes/No),Variable,No,Demographics
 Variable,Ethnicity: Asian or Asian British (Yes/No),Variable,No,Demographics
 Variable,Ethnicity: Black or Black British (Yes/No),Variable,No,Demographics
-Variable,Ethnicity: Other ethnicity Groups (Yes/No),Variable,No,Demographics
-Variable,Ethnicity: Not stated/Not known (Yes/No),Variable,No,Demographics
+Variable,Ethnicity: Other Ethnicity Groups (Yes/No),Variable,No,Demographics
+Variable,Ethnicity: Not Stated/Not Known (Yes/No),Variable,No,Demographics
 Variable,Abingdon (Yes/No),Variable,No,Home geographic location
 Variable,Northampton NN (Yes/No),Variable,No,Home geographic location
 Variable,Swindon SN (Yes/No),Variable,No,Home geographic location
@@ -67,6 +67,8 @@ Variable,Admission source: Other NHS Provider,Variable,No,Admission time & sourc
 Variable,IMDScore,Variable,No,Home geographic location
 Variable,Charlson,Variable,No,Comorbidity indexes
 Variable,Elixhauser,Variable,No,Comorbidity indexes
+Variable,Numnber of admissions within 365 days before index date,Variable,No,Previous hospital exposure
+Variable,"Overall LOS within 365 days before index date, hour",Variable,No,Previous hospital exposure
 Variable,"Maximum LOS of prior admissions within 365 days before index date, hour",Variable,No,Previous hospital exposure
 Variable,"Minimum LOS of prior admissions within 365 days before index date, hour",Variable,No,Previous hospital exposure
 Variable,"Mean LOS of prior admissions within 365 days before index date, hour",Variable,No,Previous hospital exposure

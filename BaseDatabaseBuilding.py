@@ -526,7 +526,7 @@ Database['Mixed']=np.where(Database['EthnicGroupCode'].isin(['D ','E ','F ','G '
 Database['Asian or Asian British']=np.where(Database['EthnicGroupCode'].isin(['H ','J ','K ','L ']), 1, 0)
 Database['Black or Black British']=np.where(Database['EthnicGroupCode'].isin(['M ','N ','P ']), 1, 0)
 Database['Other Ethnicity Groups']=np.where(Database['EthnicGroupCode'].isin(['R ','S ']), 1, 0)
-Database['Not stated/Not known']=np.where(Database['EthnicGroupCode'].isin(['Z ',99]), 1, 0)
+Database['Not Stated/Not Known']=np.where(Database['EthnicGroupCode'].isin(['Z ',99]), 1, 0)
 cols = ['White', 'Mixed', 'Asian or Asian British', 'Black or Black British',
        'Other Ethnicity Groups', 'Not Stated/Not Known']
 Database['Ethnicity group']=Database[cols].idxmax(1)

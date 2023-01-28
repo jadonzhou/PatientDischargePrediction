@@ -24,7 +24,7 @@ inpatient_epidsodes=inpatient_epidsodes[~inpatient_epidsodes['AdmissionDate'].is
 inpatient_epidsodes=inpatient_epidsodes.sort_values(['ClusterID','AdmissionDate']).drop_duplicates()
 # read ConsultantSpecifialty mapping
 ConsultantSpecifialty=pd.read_csv(Path+"ConsultantSpecifialty.csv")
-ConsultantSpecifialty=ConsultantSpecifialty[ConsultantSpecifialty['Specialty']!='Procedural']
+ConsultantSpecifialty=ConsultantSpecifialty[~ConsultantSpecifialty['Specialty'].isin(['Critical care','Procedural'])]
 inpatient_epidsodes=pd.merge(inpatient_epidsodes, ConsultantSpecifialty[['ConsultantMainSpecialtyCode','Specialty']][ConsultantSpecifialty['ConsultantMainSpecialtyCode'].isin(list(set(inpatient_epidsodes['ConsultantMainSpecialtyCode'])))], how='left', on='ConsultantMainSpecialtyCode')
 # create a baseDatabase (To save RAM memory when reading other big files)
 def getIndexDatePatients(inpatient_epidsodes, index_date):
@@ -45,8 +45,6 @@ Demographics=Demographics[Demographics['date_admitted']<=pd.to_datetime(end_date
 Demographics=Demographics.sort_values(['ClusterID','date_admitted'], ascending=[True, False]).drop_duplicates()
 # combine episodes with diagnosis
 ccsCodes=pd.read_csv(Path+"ccs_lookup.csv")
-ccsCodes=ccsCodes[ccsCodes['Disease']!='perinatal, congenital and birth disorders']
-diseasesSet=list(set(ccsCodes['Disease'].dropna()))
 inpt_diagnosis=pd.read_hdf(Path+"inpt_diagnosis.h5", key='df')
 inpt_diagnosis=inpt_diagnosis[['ClusterID', 'EpisodeID', 'DiagCode']].drop_duplicates()
 inpt_diagnosis=inpt_diagnosis[~inpt_diagnosis['DiagCode'].isnull()]
@@ -58,6 +56,7 @@ inpt_diagnosis_epis=inpt_diagnosis_epis.sort_values(['ClusterID','AdmissionDate'
 inpt_diagnosis_epis=inpt_diagnosis_epis[inpt_diagnosis_epis['ClusterID'].isin(Database['ClusterID'].values.tolist())]
 inpt_diagnosis_epis=pd.merge(inpt_diagnosis_epis, ccsCodes[['DiagCode','Disease']][ccsCodes['DiagCode'].isin(list(set(inpt_diagnosis_epis['DiagCode'])))], how='left', on='DiagCode')
 inpt_diagnosis_epis=inpt_diagnosis_epis[~inpt_diagnosis_epis['Disease'].isnull()]
+inpt_diagnosis_epis=inpt_diagnosis_epis[inpt_diagnosis_epis['Disease']!="Perinatal, congenital and birth disorders"]
 # read weight height BMI
 weight_height=pd.read_hdf(Path+"weight_height.h5", key='df')
 weight_height=weight_height[['ClusterID', 'EventName', 'EventResult', 'PerformedDateTime']].drop_duplicates()
@@ -159,7 +158,7 @@ BugsIsolatedMapping=pd.read_csv(Path+"BugsIsolatedMapping.csv")
 ###############  Extract and save features
 Database=[]
 for index_date in pd.date_range(start_date, end_date, freq='1440T'):
-    print(index_date)
+    #print(index_date)
     start_whole = timeit.default_timer()
     # Identify patients in hospital on index date
     Database_day_t=inpatient_epidsodes[(inpatient_epidsodes['AdmissionDate']<=pd.to_datetime(index_date, dayfirst=True)) & (inpatient_epidsodes['DischargeDate']>=pd.to_datetime(index_date, dayfirst=True))]
@@ -199,7 +198,13 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
     inpatient_epidsodes_day_t=inpatient_epidsodes_day_t[inpatient_epidsodes_day_t['AdmissionDate']<=pd.to_datetime(index_date)]
     inpatient_epidsodes_day_t_previous365=inpatient_epidsodes_day_t[inpatient_epidsodes_day_t['AdmissionDate']>=(pd.to_datetime(index_date)-datetime.timedelta(days=365))]
     LOS_features=inpatient_epidsodes_day_t_previous365.groupby(['ClusterID'])['LOS, hour'].agg(['count', 'sum','max', 'min', 'mean', 'median', 'std'])
-    LOS_features.columns=['Numnber of admissions within 365 days before index date', 'Overall LOS within 365 days before index date, hour', 'Maximum LOS of prior admissions within 365 days before index date, hour', 'Minimum LOS of prior admissions within 365 days before index date, hour', 'Mean LOS of prior admissions within 365 days before index date, hour', 'Median LOS of prior admissions within 365 days before index date, hour', 'LOS SD of prior admissions within 365 days before index date']
+    LOS_features.columns=['Numnber of admissions within 365 days before index date', 
+                          'Overall LOS within 365 days before index date, hour', 
+                          'Maximum LOS of prior admissions within 365 days before index date, hour', 
+                          'Minimum LOS of prior admissions within 365 days before index date, hour', 
+                          'Mean LOS of prior admissions within 365 days before index date, hour', 
+                          'Median LOS of prior admissions within 365 days before index date, hour', 
+                          'LOS SD of prior admissions within 365 days before index date']
     Database_day_t=pd.merge(Database_day_t,LOS_features, how='left', on='ClusterID')
     # readmission features
     Readm30Num=pd.DataFrame(inpatient_epidsodes_day_t_previous365[['ClusterID', 'AdmissionDate', 'DischargeDate', 'Readmit30', 'Readmit180']].drop_duplicates().groupby(['ClusterID'])['Readmit30'].sum())
@@ -232,7 +237,7 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
     inpt_diagnosis_prior365.columns=['Diagnosis of '+x.split('_')[1].lower()+' within 365 days before index date (Yes/No)' for x in inpt_diagnosis_prior365.columns.tolist()]
     Database_day_t=pd.merge(Database_day_t,inpt_diagnosis_prior365, how='left', on='ClusterID')     
     stop = timeit.default_timer()
-    print('Time to extract diagnosis features: ', stop - start)
+    #print('Time to extract diagnosis features: ', stop - start)
     # specialty features
     start = timeit.default_timer()
     inpt_diagnosis_epis_day_t_current=inpatient_epidsodes_day_t[inpatient_epidsodes_day_t['EpisodeID'].isin(Database_day_t['EpisodeID'].values.tolist())]
@@ -254,7 +259,7 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
         inpatient_epidsodes_specialty_duration_sub.columns=['ClusterID','Time elapsed since most recent '+specialty.lower()+' 365 days before index date, day']
         Database_day_t=pd.merge(Database_day_t,inpatient_epidsodes_specialty_duration_sub, how='left', on='ClusterID')        
     stop = timeit.default_timer()
-    print('Time to extract specialty features: ', stop - start)
+    #print('Time to extract specialty features: ', stop - start)
     # procedure duration
     procedures_day_t=inpt_procedures[inpt_procedures['ClusterID'].isin(Database_day_t['ClusterID'].values.tolist())]
     procedures_day_t['ProcDate']=pd.to_datetime(procedures_day_t['ProcDate'], dayfirst=True).dt.tz_localize(None)
@@ -365,7 +370,7 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
             Database_day_t[colname]=np.where(Database_day_t[colname]>0,Database_day_t[colname],0)
             Database_day_t['Had '+testcol.split(',')[0]+' tested '+str(hourMarker)+' hours before index date (Yes/No)']=np.where(Database_day_t[colname]>0,1,0)    
     stop = timeit.default_timer()
-    print('Time to extract news2 features: ', stop - start)
+    #print('Time to extract news2 features: ', stop - start)
     # O2Devices features
     start = timeit.default_timer()
     O2Devices_day_t=vitals[vitals['ClusterID'].isin(Database_day_t['ClusterID'].values.tolist())]
@@ -390,7 +395,7 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
         Database_day_t=pd.merge(Database_day_t,O2Devices_day_t_current_stats_test, how='left', on='ClusterID')  
         Database_day_t['Had '+testcol+' within current admission (Yes/No)']=np.where(Database_day_t[colname]>0,1,0)
     stop = timeit.default_timer()
-    print('Time to extract O2Devices features: ', stop - start) 
+    #print('Time to extract O2Devices features: ', stop - start) 
     # labtests features
     start = timeit.default_timer()
     labs_day_t=labtests[labtests['ClusterID'].isin(Database_day_t['ClusterID'].values.tolist())]
@@ -399,12 +404,25 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
     for hourMarker in hourMarkers:
         labs_day_t_temp=labs_day_t[labs_day_t['CollectionDateTime']>=(pd.to_datetime(index_date)-datetime.timedelta(hours=hourMarker))]
         labs_day_t_temp_stats=labs_day_t_temp.groupby(['ClusterID','TestName'])['Value'].agg(['count', 'max', 'min', 'mean', 'median', 'std']).reset_index(level=1) 
+        labs_day_t_temp_count=labs_day_t_temp.groupby(['ClusterID'])['Value'].agg(['count']) 
+        labs_day_t_temp_count.columns=['Numnber of labtests within '+str(hourMarker)+' hours before index date']
+        Database_day_t=pd.merge(Database_day_t,labs_day_t_temp_count, how='left', on='ClusterID')
         for test in tests:
             labs_day_t_temp_stats_test=labs_day_t_temp_stats[labs_day_t_temp_stats['TestName']==test].iloc[:,1:labs_day_t_temp_stats.shape[1]]
             if len(test.split(','))>1:
-                labs_day_t_temp_stats_test.columns=['Number of '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date', 'Maximum '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date,'+test.split(',')[1], 'Minimum '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date,'+test.split(',')[1], 'Mean '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date,'+test.split(',')[1], 'Median '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date,'+test.split(',')[1], 'SD of '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date']
+                labs_day_t_temp_stats_test.columns=['Number of '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date', 
+                                                    'Maximum '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date,'+test.split(',')[1], 
+                                                    'Minimum '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date,'+test.split(',')[1], 
+                                                    'Mean '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date,'+test.split(',')[1], 
+                                                    'Median '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date,'+test.split(',')[1], 
+                                                    'SD of '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date']
             else:
-                labs_day_t_temp_stats_test.columns=['Number of '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date', 'Maximum '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date', 'Minimum '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date', 'Mean '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date', 'Median '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date', 'SD of '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date']
+                labs_day_t_temp_stats_test.columns=['Number of '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date', 
+                                                    'Maximum '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date', 
+                                                    'Minimum '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date', 
+                                                    'Mean '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date', 
+                                                    'Median '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date', 
+                                                    'SD of '+test.split(',')[0]+' '+str(hourMarker)+' hours before index date']
             if hourMarker==8760:
                 labs_day_t_temp_stats_test=labs_day_t_temp_stats_test.loc[:, [x.split(' ')[0] not in ['Maximum', 'Minimum', 'Mean', 'Median', 'SD'] for x in labs_day_t_temp_stats_test.columns.tolist()]]
             Database_day_t=pd.merge(Database_day_t,labs_day_t_temp_stats_test, how='left', on='ClusterID')
@@ -412,16 +430,29 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
     labs_day_t_current=pd.merge(labs_day_t, Database_day_t[['ClusterID', 'AdmissionDate']], how='left', on='ClusterID')
     labs_day_t_current=labs_day_t_current[labs_day_t_current['AdmissionDate']<=labs_day_t_current['CollectionDateTime']]
     labs_day_t_current_stats=labs_day_t_current.groupby(['ClusterID','TestName'])['Value'].agg(['count', 'max', 'min', 'mean', 'median', 'std']).reset_index(level=1) 
+    labs_day_t_current_count=labs_day_t_current.groupby(['ClusterID'])['Value'].agg(['count']) 
+    labs_day_t_current_count.columns=['Numnber of labtests within current admission']
+    Database_day_t=pd.merge(Database_day_t,labs_day_t_current_count, how='left', on='ClusterID')
     for test in tests:
         labs_day_t_current_stats_test=labs_day_t_current_stats[labs_day_t_current_stats['TestName']==test].iloc[:,1:labs_day_t_current_stats.shape[1]]
         if len(test.split(','))>1:
-            labs_day_t_current_stats_test.columns=['Number of '+test.split(',')[0]+' within current admission', 'Maximum '+test.split(',')[0]+' within current admission,'+test.split(',')[1], 'Minimum '+test.split(',')[0]+' within current admission,'+test.split(',')[1], 'Mean '+test.split(',')[0]+' within current admission,'+test.split(',')[1], 'Median '+test.split(',')[0]+' within current admission,'+test.split(',')[1], 'SD of '+test.split(',')[0]+' within current admission']
+            labs_day_t_current_stats_test.columns=['Number of '+test.split(',')[0]+' within current admission', 
+                                                   'Maximum '+test.split(',')[0]+' within current admission,'+test.split(',')[1], 
+                                                   'Minimum '+test.split(',')[0]+' within current admission,'+test.split(',')[1], 
+                                                   'Mean '+test.split(',')[0]+' within current admission,'+test.split(',')[1], 
+                                                   'Median '+test.split(',')[0]+' within current admission,'+test.split(',')[1], 
+                                                   'SD of '+test.split(',')[0]+' within current admission']
         else:
-            labs_day_t_current_stats_test.columns=['Number of '+test.split(',')[0]+' within current admission', 'Maximum '+test.split(',')[0]+' within current admission', 'Minimum '+test.split(',')[0]+' within current admission', 'Mean '+test.split(',')[0]+' within current admission', 'Median '+test.split(',')[0]+' within current admission', 'SD of '+test.split(',')[0]+' within current admission']
+            labs_day_t_current_stats_test.columns=['Number of '+test.split(',')[0]+' within current admission', 
+                                                   'Maximum '+test.split(',')[0]+' within current admission', 
+                                                   'Minimum '+test.split(',')[0]+' within current admission', 
+                                                   'Mean '+test.split(',')[0]+' within current admission', 
+                                                   'Median '+test.split(',')[0]+' within current admission', 
+                                                   'SD of '+test.split(',')[0]+' within current admission']
         Database_day_t=pd.merge(Database_day_t,labs_day_t_current_stats_test, how='left', on='ClusterID')
         Database_day_t['Had '+test.split(',')[0]+' within current admission (Yes/No)']=np.where(Database_day_t['Number of '+test.split(',')[0]+' within current admission']>0,1,0)
     stop = timeit.default_timer()
-    print('Time to extract labtests features: ', stop - start) 
+    #print('Time to extract labtests features: ', stop - start) 
     # positive cultures
     start = timeit.default_timer()
     micro_day_t=micro[micro['ClusterID'].isin(Database_day_t['ClusterID'].values.tolist())]
@@ -443,7 +474,7 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
             Database_day_t[colname]=np.where(Database_day_t[colname]>0,Database_day_t[colname],0)
             Database_day_t['Positive '+culture+' tested within '+str(hourMarker)+' hours before index date (Yes/No)']=np.where(Database_day_t[colname]>0,1,0)
     stop = timeit.default_timer()
-    print('Time to extract positive cultures features: ', stop - start)
+    #print('Time to extract positive cultures features: ', stop - start)
     # other microbiology tests
     start = timeit.default_timer()
     micro_day_t=micro[micro['ClusterID'].isin(Database_day_t['ClusterID'].values.tolist())]
@@ -452,9 +483,9 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
     for bug in ['Staphylococcus aureus', 'Enterococcus','ESBL/CPE']:
         micro_day_t_bug=micro_day_t[micro_day_t['BugName'].isin(BugsIsolatedMapping[bug].dropna().tolist())]
         micro_day_t_bug['Bug number']=1
-        Bug_duration=pd.DataFrame(micro_day_t_bug.groupby(['ClusterID'])['CollectionDateTime'].last())
+        Bug_duration=pd.DataFrame(micro_day_t_bug.groupby(['ClusterID'])['CollectionDateTime'].last()).reset_index()
         Bug_duration['Time elapsed since most recent tested '+bug+' before index date, hour']=[(pd.to_datetime(index_date)-Bug_duration['CollectionDateTime'].iloc[x]).total_seconds()/3600 for x in range(Bug_duration.shape[0])]
-        Database_day_t=pd.merge(Database_day_t, Bug_duration , how='left', on='ClusterID')
+        Database_day_t=pd.merge(Database_day_t,Bug_duration.drop('CollectionDateTime', axis=1), how='left', on='ClusterID')
         hourMarkers=[24, 48, 365*24]
         for hourMarker in hourMarkers:
             micro_day_t_bug_temp=micro_day_t_bug[micro_day_t_bug['CollectionDateTime']>=(pd.to_datetime(index_date)-datetime.timedelta(hours=hourMarker))]
@@ -465,7 +496,7 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
             Database_day_t[colname]=np.where(Database_day_t[colname]>0,Database_day_t[colname],0)
             Database_day_t[bug+' tested within '+str(hourMarker)+' hours before index date (Yes/No)']=np.where(Database_day_t[colname]>0,1,0)
     stop = timeit.default_timer()
-    print('Time to extract tested bug features: ', stop - start)
+    #print('Time to extract tested bug features: ', stop - start)
     # antibiotics prescriptions
     start = timeit.default_timer()
     antibiotics_day_t=antibiotics[antibiotics['ClusterID'].isin(Database_day_t['ClusterID'].values.tolist())]
@@ -499,13 +530,16 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
             HadNewAntibiotics.iloc[i,0]=1
     Database_day_t=pd.merge(Database_day_t,HadNewAntibiotics, how='left', on='ClusterID')   
     stop = timeit.default_timer()
-    print('Time to extract antibiotics features: ', stop - start)
+    #print('Time to extract antibiotics features: ', stop - start)
     # aggregate all above extracted features
     Database.append(Database_day_t)
     stop_whole = timeit.default_timer()
-    print('Time to extract features for patients being in hospital on index date: ', stop_whole - start_whole)
+    #print(index_date, 'Time to extract features for patients being in hospital on index date: ', stop_whole - start_whole)
+
 
 Database=pd.concat(Database, axis=0)
+SavePath=Path+"Databases/0919/WithSplitingAdults/Index6/"
+Database.to_csv(SavePath+"DatabaseIndex6Pre.csv", index=False)
 
 # Gender
 Database['Male']=np.where(Database['LinkedSex']=='M', 1, 0)
@@ -520,7 +554,7 @@ Database['60-80'] = np.where( (Database['Age']>60) & (Database['Age']<=80), 1, 0
 Database['>80'] = np.where(Database['Age']>80, 1, 0)
 cols = ['16-40', '40-60', '60-80', '>80']
 Database['Age group']=Database[cols].idxmax(1)
-# EthnicGroup
+# EthnicityGroup
 Database['White']=np.where(Database['EthnicGroupCode'].isin(['A ','B ','C ']), 1, 0)
 Database['Mixed']=np.where(Database['EthnicGroupCode'].isin(['D ','E ','F ','G ']), 1, 0)
 Database['Asian or Asian British']=np.where(Database['EthnicGroupCode'].isin(['H ','J ','K ','L ']), 1, 0)
@@ -646,25 +680,22 @@ for admissionmethod in ['Planned', 'Emergency']:
     for modeluse in ['Testing', 'Training']:
         print(admissionmethod, modeluse)
         Data=Database[(Database['Admission method']==admissionmethod) & (Database['TrainingTesting']==modeluse)]
-        Data[(Data['Adm2index, hours']>=24*0) & (Data['Adm2index, hours']<24*1)].to_csv(SavePath+"Database"+admissionmethod+"D1"+modeluse+".csv", index=False)
-        Data[(Data['Adm2index, hours']>=24*1) & (Data['Adm2index, hours']<24*2)].to_csv(SavePath+"Database"+admissionmethod+"D2"+modeluse+".csv", index=False)
-        Data[(Data['Adm2index, hours']>=24*2) & (Data['Adm2index, hours']<24*3)].to_csv(SavePath+"Database"+admissionmethod+"D3"+modeluse+".csv", index=False)
-        Data[(Data['Adm2index, hours']>=24*3) & (Data['Adm2index, hours']<24*4)].to_csv(SavePath+"Database"+admissionmethod+"D4"+modeluse+".csv", index=False)
-        Data[(Data['Adm2index, hours']>=24*4) & (Data['Adm2index, hours']<24*5)].to_csv(SavePath+"Database"+admissionmethod+"D5"+modeluse+".csv", index=False)
-        Data[(Data['Adm2index, hours']>=24*5) & (Data['Adm2index, hours']<24*6)].to_csv(SavePath+"Database"+admissionmethod+"D6"+modeluse+".csv", index=False)
-        Data[(Data['Adm2index, hours']>=24*6) & (Data['Adm2index, hours']<24*11)].to_csv(SavePath+"Database"+admissionmethod+"D7D10"+modeluse+".csv", index=False)
-        Data[(Data['Adm2index, hours']>=24*11) & (Data['Adm2index, hours']<24*14)].to_csv(SavePath+"Database"+admissionmethod+"D11D13"+modeluse+".csv", index=False)
-        Data[(Data['Adm2index, hours']>=24*14) & (Data['Adm2index, hours']<24*21)].to_csv(SavePath+"Database"+admissionmethod+"D14D20"+modeluse+".csv", index=False)
-        Data[(Data['Adm2index, hours']>=24*21) & (Data['Adm2index, hours']<24*28)].to_csv(SavePath+"Database"+admissionmethod+"D21D27"+modeluse+".csv", index=False)
+        Data[(Data['Adm2index, hours']>=24*0) & (Data['Adm2index, hours']<24*1)].to_csv(SavePath+"Database"+admissionmethod+"D1"+modeluse+"1.csv", index=False)
+        Data[(Data['Adm2index, hours']>=24*1) & (Data['Adm2index, hours']<24*2)].to_csv(SavePath+"Database"+admissionmethod+"D2"+modeluse+"1.csv", index=False)
+        Data[(Data['Adm2index, hours']>=24*2) & (Data['Adm2index, hours']<24*3)].to_csv(SavePath+"Database"+admissionmethod+"D3"+modeluse+"1.csv", index=False)
+        Data[(Data['Adm2index, hours']>=24*3) & (Data['Adm2index, hours']<24*4)].to_csv(SavePath+"Database"+admissionmethod+"D4"+modeluse+"1.csv", index=False)
+        Data[(Data['Adm2index, hours']>=24*4) & (Data['Adm2index, hours']<24*5)].to_csv(SavePath+"Database"+admissionmethod+"D5"+modeluse+"1.csv", index=False)
+        Data[(Data['Adm2index, hours']>=24*5) & (Data['Adm2index, hours']<24*6)].to_csv(SavePath+"Database"+admissionmethod+"D6"+modeluse+"1.csv", index=False)
+        Data[(Data['Adm2index, hours']>=24*6) & (Data['Adm2index, hours']<24*11)].to_csv(SavePath+"Database"+admissionmethod+"D7D10"+modeluse+"1.csv", index=False)
+        Data[(Data['Adm2index, hours']>=24*11) & (Data['Adm2index, hours']<24*14)].to_csv(SavePath+"Database"+admissionmethod+"D11D13"+modeluse+"1.csv", index=False)
+        Data[(Data['Adm2index, hours']>=24*14) & (Data['Adm2index, hours']<24*21)].to_csv(SavePath+"Database"+admissionmethod+"D14D20"+modeluse+"1.csv", index=False)
+        Data[(Data['Adm2index, hours']>=24*21) & (Data['Adm2index, hours']<24*28)].to_csv(SavePath+"Database"+admissionmethod+"D21D27"+modeluse+"1.csv", index=False)
         Data[(Data['Adm2index, hours']>=24*28)].to_csv(SavePath+"Database"+admissionmethod+"D28+"+modeluse+".csv", index=False)
 
         
 
     
-    
-
-    
-
+   
 
     
     

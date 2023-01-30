@@ -1407,3 +1407,8 @@ Antibiotics prescription within 48 hours before index date (Yes/No),Feature,No,A
 New antibiotics prescribed 24 hours before index date (Yes/No),Feature,No,Antibiotic use
 Diagnosis of meningitis and encephalitis within 24 hours before index date (Yes/No),Feature,No,Specific comorbidities
 Diagnosis of respiratory failure and arrest within 24 hours before index date (Yes/No),Feature,No,Specific comorbidities
+Maxmimu LOS by CCS diagnosis group,Feature,No,"Length of stay, by diagnosis group"
+Minimum LOS by CCS diagnosis group,Feature,No,"Length of stay, by diagnosis group"
+Mean LOS by CCS diagnosis group,Feature,No,"Length of stay, by diagnosis group"
+Median LOS by CCS diagnosis group,Feature,No,"Length of stay, by diagnosis group"
+SD of LOS by CCS diagnosis group,Feature,No,"Length of stay, by diagnosis group"

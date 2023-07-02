@@ -12,7 +12,7 @@ from line_profiler_pycharm import profile
 # Feature engineering
 # =============================================================================
 ############### Read data
-start_date='2019-01-31 6:00:00'
+start_date='2017-02-01 6:00:00'
 end_date='2020-02-01 6:00:00'
 Path='/Users/jiandong/Oxford/Data/iord_extract_20220325/'
 # read inpatient_epidsodes
@@ -54,7 +54,6 @@ inpt_diagnosis_epis = pd.merge(inpt_diagnosis, inpatient_epidsodes[['ClusterID',
 inpt_diagnosis_epis['AdmissionDate']=pd.to_datetime(inpt_diagnosis_epis['AdmissionDate'], dayfirst=True).dt.tz_localize(None)
 inpt_diagnosis_epis['DischargeDate']=pd.to_datetime(inpt_diagnosis_epis['DischargeDate'], dayfirst=True).dt.tz_localize(None)
 inpt_diagnosis_epis=inpt_diagnosis_epis[~inpt_diagnosis_epis['AdmissionDate'].isnull()]
-inpt_diagnosis_epis['LOS duration of diagnosis episode, day']=(inpt_diagnosis_epis['DischargeDate']-inpt_diagnosis_epis['AdmissionDate']).dt.days
 inpt_diagnosis_epis=inpt_diagnosis_epis.sort_values(['ClusterID','AdmissionDate'], ascending=[True, False])
 inpt_diagnosis_epis=inpt_diagnosis_epis[inpt_diagnosis_epis['ClusterID'].isin(Database['ClusterID'].values.tolist())]
 inpt_diagnosis_epis=pd.merge(inpt_diagnosis_epis, ccsCodes[['DiagCode','Disease']][ccsCodes['DiagCode'].isin(list(set(inpt_diagnosis_epis['DiagCode'])))], how='left', on='DiagCode')
@@ -168,7 +167,7 @@ BugsIsolatedMapping=pd.read_csv(Path+"BugsIsolatedMapping.csv")
 ###############  Extract and save features
 Database=[]
 for index_date in pd.date_range(start_date, end_date, freq='1440T'):
-    print(index_date)
+    #print(index_date)
     start_whole = timeit.default_timer()
     # Identify patients in hospital on index date
     Database_day_t=inpatient_epidsodes[(inpatient_epidsodes['AdmissionDate']<=pd.to_datetime(index_date, dayfirst=True)) & (inpatient_epidsodes['DischargeDate']>=pd.to_datetime(index_date, dayfirst=True))]
@@ -202,43 +201,27 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
     Database_day_t['Weight, kg']=np.where(Database_day_t['Weight, kg']==0, 70, Database_day_t['Weight, kg'])
     Database_day_t['BMI']=Database_day_t['Weight, kg']/(Database_day_t['Height, cm']/100*Database_day_t['Height, cm']/100)
     Database_day_t['BMI']=np.where(Database_day_t['BMI']>=39.9, np.nan, Database_day_t['BMI'])
-    # LOS features
+    # LOS features 365 days before index date    
     inpatient_epidsodes_day_t=inpatient_epidsodes[inpatient_epidsodes['ClusterID'].isin(Database_day_t['ClusterID'].values.tolist())]
     inpatient_epidsodes_day_t['AdmissionDate']=pd.to_datetime(inpatient_epidsodes_day_t['AdmissionDate'], dayfirst=True).dt.tz_localize(None)
     inpatient_epidsodes_day_t=inpatient_epidsodes_day_t[inpatient_epidsodes_day_t['AdmissionDate']<=pd.to_datetime(index_date)]
-    # LOS features within current admission  
-    current_adm_dates = inpatient_epidsodes_day_t[inpatient_epidsodes_day_t.groupby('ClusterID')['AdmissionDate'].transform('max').eq(inpatient_epidsodes_day_t['AdmissionDate'])][['ClusterID','AdmissionDate']].drop_duplicates()
-    current_adm_dates.columns=['ClusterID','Current admission date']
-    current_adm_dates['Overall LOS within current admission before index date time, hour']=(pd.to_datetime(index_date)-current_adm_dates['Current admission date']).dt.total_seconds()/3600
-    Database_day_t=pd.merge(Database_day_t,current_adm_dates, how='left', on='ClusterID')
-    # LOS features 365 days before current admission date  
-    inpatient_epidsodes_day_t=pd.merge(inpatient_epidsodes_day_t,current_adm_dates,how='left',on='ClusterID')
-    inpatient_epidsodes_day_t_before_current=inpatient_epidsodes_day_t[inpatient_epidsodes_day_t['AdmissionDate']<inpatient_epidsodes_day_t['Current admission date']]
-    inpatient_epidsodes_day_t_before_current=inpatient_epidsodes_day_t[inpatient_epidsodes_day_t['AdmissionDate']>=(pd.to_datetime(inpatient_epidsodes_day_t['Current admission date'])-datetime.timedelta(days=365))]
-    LOS_features_365days_before_current=inpatient_epidsodes_day_t_before_current.groupby(['ClusterID'])['LOS, hour'].agg(['count', 'sum','max', 'min', 'mean', 'median', 'std'])
-    LOS_features_365days_before_current.columns=['Numnber of admissions within 365 days before current admission date', 
-                          'Overall LOS within 365 days before current admission date, hour', 
-                          'Maximum LOS of prior admissions within 365 days before current admission date, hour', 
-                          'Minimum LOS of prior admissions within 365 days before current admission date, hour', 
-                          'Mean LOS of prior admissions within 365 days before current admission date, hour', 
-                          'Median LOS of prior admissions within 365 days before current admission date, hour', 
-                          'LOS SD of prior admissions within 365 days before current admission date']
-    LOS_features_365days_before_current=LOS_features_365days_before_current.fillna(0)
-    Database_day_t=pd.merge(Database_day_t,LOS_features_365days_before_current, how='left', on='ClusterID')
-    # LOS features 365 days before index date  
     inpatient_epidsodes_day_t_previous365=inpatient_epidsodes_day_t[inpatient_epidsodes_day_t['AdmissionDate']>=(pd.to_datetime(index_date)-datetime.timedelta(days=365))]
-    #LOS_features_365days_before_index=inpatient_epidsodes_day_t_previous365.groupby(['ClusterID'])['LOS, hour'].agg(['count', 'sum','max', 'min', 'mean', 'median', 'std'])
-    #LOS_features_365days_before_index.columns=['Numnber of admissions within 365 days before index date', 'Overall LOS within 365 days before index date, hour', 
-                          #'Maximum LOS of prior admissions within 365 days before index date, hour', 'Minimum LOS of prior admissions within 365 days before index date, hour', 
-                          #'Mean LOS of prior admissions within 365 days before index date, hour', 'Median LOS of prior admissions within 365 days before index date, hour', 'LOS SD of prior admissions within 365 days before index date']    
-    #Database_day_t=pd.merge(Database_day_t,LOS_features_365days_before_index, how='left', on='ClusterID')
+    LOS_features=inpatient_epidsodes_day_t_previous365.groupby(['ClusterID'])['LOS, hour'].agg(['count', 'sum','max', 'min', 'mean', 'median', 'std'])
+    LOS_features.columns=['Numnber of admissions within 365 days before index date', 
+                          'Overall LOS within 365 days before index date, hour', 
+                          'Maximum LOS of prior admissions within 365 days before index date, hour', 
+                          'Minimum LOS of prior admissions within 365 days before index date, hour', 
+                          'Mean LOS of prior admissions within 365 days before index date, hour', 
+                          'Median LOS of prior admissions within 365 days before index date, hour', 
+                          'LOS SD of prior admissions within 365 days before index date']
+    Database_day_t=pd.merge(Database_day_t,LOS_features, how='left', on='ClusterID')
     # readmission features
     Readm30Num=pd.DataFrame(inpatient_epidsodes_day_t_previous365[['ClusterID', 'AdmissionDate', 'DischargeDate', 'Readmit30', 'Readmit180']].drop_duplicates().groupby(['ClusterID'])['Readmit30'].sum())
     Readm30Num.columns=['Number of early 30-day readmissions within 365 days before index date']
     Database_day_t=pd.merge(Database_day_t,Readm30Num, how='left', on='ClusterID')
     Readm30Duration=pd.DataFrame(inpatient_epidsodes_day_t_previous365[['ClusterID', 'AdmissionDate', 'DischargeDate', 'Readmit30', 'Readmit180']].groupby(['ClusterID'])['AdmissionDate'].last())
     Readm30Duration['Time elapsed from most recent early 30-day readmission within 365 days before index date, day']=[(pd.to_datetime(index_date)-Readm30Duration['AdmissionDate'].iloc[x]).days for x in range(Readm30Duration.shape[0])]
-    Database_day_t=pd.merge(Database_day_t,Readm30Duration.iloc[: , 1:], how='left', on='ClusterID')  
+    Database_day_t=pd.merge(Database_day_t,Readm30Duration.iloc[: , 1:], how='left', on='ClusterID')
     # diagnosis features
     start = timeit.default_timer()
     inpt_diagnosis_epis_day_t=inpt_diagnosis_epis[inpt_diagnosis_epis['ClusterID'].isin(Database_day_t['ClusterID'].values.tolist())]
@@ -247,31 +230,22 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
     inpt_diagnosis_epis_day_t_current=inpt_diagnosis_epis_day_t[inpt_diagnosis_epis_day_t['EpisodeID'].isin(Database_day_t['EpisodeID'].values.tolist())]
     inpt_diagnosis_current=pd.get_dummies(inpt_diagnosis_epis_day_t_current, columns=['Disease'], prefix='').groupby(['ClusterID'], as_index=True).sum().T.drop_duplicates().T
     inpt_diagnosis_current[inpt_diagnosis_current>0]=1
-    inpt_diagnosis_current=inpt_diagnosis_current[[x for x in inpt_diagnosis_current.columns if '_' in x]]
     inpt_diagnosis_current.columns=['Diagnosis of '+x.split('_')[1].lower()+' within current admission (Yes/No)' for x in inpt_diagnosis_current.columns.tolist()]
-    inpt_diagnosis_current=inpt_diagnosis_current.fillna(0)
+    #calculated_LOS_diagnosis_stats
     Database_day_t=pd.merge(Database_day_t,inpt_diagnosis_current, how='left', on='ClusterID') 
-    # calculated_LOS_diagnosis_stats
     inpt_diagnosis_epis_day_t_prior24=inpt_diagnosis_epis_day_t[inpt_diagnosis_epis_day_t['AdmissionDate']>=(pd.to_datetime(index_date)-datetime.timedelta(hours=24))]
     inpt_diagnosis_prior24=pd.get_dummies(inpt_diagnosis_epis_day_t_prior24, columns=['Disease'], prefix='').groupby(['ClusterID'], as_index=True).sum().T.drop_duplicates().T
     inpt_diagnosis_prior24[inpt_diagnosis_prior24>0]=1
-    inpt_diagnosis_prior24=inpt_diagnosis_prior24[[x for x in inpt_diagnosis_prior24.columns if '_' in x]]
     inpt_diagnosis_prior24.columns=['Diagnosis of '+x.split('_')[1].lower()+' within 24 hours before index date (Yes/No)' for x in inpt_diagnosis_prior24.columns.tolist()]
-    inpt_diagnosis_prior24=inpt_diagnosis_prior24.fillna(0)
     Database_day_t=pd.merge(Database_day_t,inpt_diagnosis_prior24, how='left', on='ClusterID') 
     inpt_diagnosis_epis_day_t_prior365=inpt_diagnosis_epis_day_t[inpt_diagnosis_epis_day_t['AdmissionDate']>=(pd.to_datetime(index_date)-datetime.timedelta(hours=24*365))]
     inpt_diagnosis_prior365=pd.get_dummies(inpt_diagnosis_epis_day_t_prior365, columns=['Disease'], prefix='').groupby(['ClusterID'], as_index=True).sum().T.drop_duplicates().T
-    inpt_diagnosis_prior365=inpt_diagnosis_prior365[[x for x in inpt_diagnosis_prior365.columns if '_' in x]]
     inpt_diagnosis_prior365.columns=['Number of '+x.split('_')[1].lower()+' diagnosis within 365 days before index date (Yes/No)' for x in inpt_diagnosis_prior365.columns.tolist()]
-    inpt_diagnosis_prior365=inpt_diagnosis_prior365.fillna(0)
     Database_day_t=pd.merge(Database_day_t,inpt_diagnosis_prior365, how='left', on='ClusterID') 
     inpt_diagnosis_prior365=pd.get_dummies(inpt_diagnosis_epis_day_t_prior365, columns=['Disease'], prefix='').groupby(['ClusterID'], as_index=True).sum().T.drop_duplicates().T
     inpt_diagnosis_prior365[inpt_diagnosis_prior365>0]=1
-    inpt_diagnosis_prior365=inpt_diagnosis_prior365[[x for x in inpt_diagnosis_prior365.columns if '_' in x]]
     inpt_diagnosis_prior365.columns=['Diagnosis of '+x.split('_')[1].lower()+' within 365 days before index date (Yes/No)' for x in inpt_diagnosis_prior365.columns.tolist()]
-    inpt_diagnosis_prior365=inpt_diagnosis_prior365.fillna(0)
-    Database_day_t=pd.merge(Database_day_t,inpt_diagnosis_prior365, how='left', on='ClusterID')    
-    #Database.append(Database_day_t)
+    Database_day_t=pd.merge(Database_day_t,inpt_diagnosis_prior365, how='left', on='ClusterID')     
     stop = timeit.default_timer()
     #print('Time to extract diagnosis features: ', stop - start)
     # specialty features
@@ -335,7 +309,6 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
         Procedure_sum=pd.DataFrame(procedures_day_t_temp.groupby(['ClusterID'])['ProcNumber'].sum())
         colname='Number of procedures '+str(hourMarker)+' hours before index date'
         Procedure_sum.columns=[colname]
-        Procedure_sum=Procedure_sum.fillna(0)
         Database_day_t=pd.merge(Database_day_t,Procedure_sum, how='left', on='ClusterID')
         Database_day_t[colname]=np.where(Database_day_t[colname]>0,Database_day_t[colname],0)
         Database_day_t['Had procedure '+str(hourMarker)+' hours before index date (Yes/No)']=np.where(Database_day_t[colname]>0,1,0)
@@ -344,7 +317,6 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
         Procedure_radiology_sum=pd.DataFrame(procedures_radiology_day_t_temp.groupby(['ClusterID'])['ProcNumber'].sum())
         colname='Number of radiology procedures '+str(hourMarker)+' hours before index date'
         Procedure_radiology_sum.columns=[colname]
-        Procedure_radiology_sum=Procedure_radiology_sum.fillna(0)
         Database_day_t=pd.merge(Database_day_t,Procedure_radiology_sum, how='left', on='ClusterID')
         Database_day_t[colname]=np.where(Database_day_t[colname]>0,Database_day_t[colname],0)
         Database_day_t['Had radiology procedure '+str(hourMarker)+' hours before index date (Yes/No)']=np.where(Database_day_t[colname]>0,1,0)
@@ -354,7 +326,6 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
         Theatre_sum=pd.DataFrame(theatres_day_t_temp.groupby(['ClusterID'])['Theatre use'].sum())
         colname='Number of theatre use '+str(hourMarker)+' hours before index date'
         Theatre_sum.columns=[colname]
-        Theatre_sum=Theatre_sum.fillna(0)
         Database_day_t=pd.merge(Database_day_t,Theatre_sum, how='left', on='ClusterID')
         Database_day_t[colname]=np.where(Database_day_t[colname]>0,Database_day_t[colname],0)
         Database_day_t['Had theatre use '+str(hourMarker)+' hours before index date (Yes/No)']=np.where(Database_day_t[colname]>0,1,0)
@@ -364,7 +335,6 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
         Ward_sum=pd.DataFrame(wards_day_t_temp.groupby(['ClusterID'])['Ward use'].sum())
         colname='Number of ward use '+str(hourMarker)+' hours before index date'
         Ward_sum.columns=[colname]
-        Ward_sum=Ward_sum.fillna(0)
         Database_day_t=pd.merge(Database_day_t,Ward_sum, how='left', on='ClusterID')
         Database_day_t[colname]=np.where(Database_day_t[colname]>0,Database_day_t[colname],0)
         Database_day_t['Had ward use '+str(hourMarker)+' hours before index date (Yes/No)']=np.where(Database_day_t[colname]>0,1,0)
@@ -579,7 +549,7 @@ for index_date in pd.date_range(start_date, end_date, freq='1440T'):
 
 Database=pd.concat(Database, axis=0)
 SavePath=Path+"Databases/0919/WithSplitingAdults/Index6/"
-Database.to_csv(SavePath+"DatabaseIndex6Pre20230616.csv", index=False)
+Database.to_csv(SavePath+"DatabaseIndex6Pre.csv", index=False)
 
 
 # Gender
